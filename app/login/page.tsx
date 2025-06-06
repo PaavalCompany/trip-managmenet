@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { signIn, getSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -40,7 +40,7 @@ export default function LoginPage() {
       } else {
         router.push("/dashboard")
       }
-    } catch (error) {
+    } catch {
       setError("Something went wrong")
     } finally {
       setIsLoading(false)

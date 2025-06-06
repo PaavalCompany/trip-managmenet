@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -28,7 +27,6 @@ import {
 } from "lucide-react"
 
 export default function NewTripPage() {
-  const { data: session } = useSession()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{
@@ -80,7 +78,7 @@ export default function NewTripPage() {
           message: result.error || "Failed to create trip",
         })
       }
-    } catch (error) {
+    } catch {
       setSubmitResult({
         success: false,
         message: "Network error. Please try again.",
