@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       tripId: validatedData.tripId,
-      tallyLink,
+      tallyUrl: tallyLink,
       message: "Trip created successfully!"
     })
 
