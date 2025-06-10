@@ -2,11 +2,11 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #09090b;
   --card: #ffffff;
-  --card-foreground: #171717;
+  --card-foreground: #09090b;
   --popover: #ffffff;
-  --popover-foreground: #171717;
+  --popover-foreground: #09090b;
   --primary: #4f46e5;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
@@ -50,24 +50,24 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card: #0a0a0a;
-    --card-foreground: #ededed;
-    --popover: #0a0a0a;
-    --popover-foreground: #ededed;
+    --background: #09090b;
+    --foreground: #fafafa;
+    --card: #09090b;
+    --card-foreground: #fafafa;
+    --popover: #09090b;
+    --popover-foreground: #fafafa;
     --primary: #6366f1;
     --primary-foreground: #ffffff;
-    --secondary: #1e293b;
-    --secondary-foreground: #f1f5f9;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --accent: #1e293b;
-    --accent-foreground: #f1f5f9;
+    --secondary: #27272a;
+    --secondary-foreground: #fafafa;
+    --muted: #27272a;
+    --muted-foreground: #a1a1aa;
+    --accent: #27272a;
+    --accent-foreground: #fafafa;
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
-    --border: #1e293b;
-    --input: #1e293b;
+    --border: #3f3f46;
+    --input: #3f3f46;
     --ring: #6366f1;
   }
 }
@@ -83,6 +83,19 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+  
+  /* Ensure all form elements use proper theming */
+  input, textarea, select {
+    @apply text-foreground;
+  }
+  
+  /* Fix for webkit-based browsers autofill */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--foreground) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
   }
 }
