@@ -87,6 +87,35 @@ body {
   
   /* Mobile-specific fixes */
   @media (max-width: 768px) {
+    /* Force theme variables on mobile browsers */
+    :root {
+      color-scheme: light dark;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #000000 !important;
+        --foreground: #ffffff !important;
+        --card: #111111 !important;
+        --card-foreground: #ffffff !important;
+        --popover: #111111 !important;
+        --popover-foreground: #ffffff !important;
+        --primary: #6366f1 !important;
+        --primary-foreground: #ffffff !important;
+        --secondary: #333333 !important;
+        --secondary-foreground: #ffffff !important;
+        --muted: #333333 !important;
+        --muted-foreground: #999999 !important;
+        --accent: #333333 !important;
+        --accent-foreground: #ffffff !important;
+        --destructive: #ef4444 !important;
+        --destructive-foreground: #ffffff !important;
+        --border: #555555 !important;
+        --input: #555555 !important;
+        --ring: #6366f1 !important;
+      }
+    }
+    
     /* Only apply to inputs without explicit styling */
     input:not([class*="border"]):not([class*="bg-"]),
     textarea:not([class*="border"]):not([class*="bg-"]),
@@ -116,6 +145,22 @@ body {
     
     .text-muted-foreground {
       color: var(--muted-foreground) !important;
+    }
+    
+    .text-foreground {
+      color: var(--foreground) !important;
+    }
+    
+    .bg-background {
+      background-color: var(--background) !important;
+    }
+    
+    .bg-muted {
+      background-color: var(--muted) !important;
+    }
+    
+    .border-border {
+      border-color: var(--border) !important;
     }
   }
 }

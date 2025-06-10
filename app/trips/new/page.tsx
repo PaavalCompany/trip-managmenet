@@ -1,11 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useForm, Controller } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { tripSchema, type TripFormData } from "@/lib/validations"
-import { generateTripId, formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,14 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  MapPin,
-  ArrowLeft,
-  CheckCircle,
-  Copy,
-  ExternalLink,
-  Loader2,
-} from "lucide-react"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { tripSchema, type TripFormData } from "@/lib/validations"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { ArrowLeft, Copy, CheckCircle, MapPin, Loader2 } from "lucide-react"
+import { generateTripId, formatCurrency } from "@/lib/utils"
 
 export default function NewTripPage() {
   const router = useRouter()
@@ -32,7 +25,8 @@ export default function NewTripPage() {
   const [submitResult, setSubmitResult] = useState<{
     success: boolean
     tripId?: string
-    tallyLink?: string
+    destination?: string
+    tallyUrl?: string
     message?: string
   } | null>(null)
 
@@ -41,7 +35,6 @@ export default function NewTripPage() {
     handleSubmit,
     control,
     formState: { errors },
-    setValue,
     watch,
   } = useForm<TripFormData>({
     resolver: zodResolver(tripSchema),
@@ -69,7 +62,8 @@ export default function NewTripPage() {
         setSubmitResult({
           success: true,
           tripId: result.tripId,
-          tallyLink: result.tallyLink,
+          destination: data.destination,
+          tallyUrl: result.tallyUrl,
           message: result.message,
         })
       } else {
@@ -94,63 +88,45 @@ export default function NewTripPage() {
 
   if (submitResult?.success) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="min-h-screen bg-background py-8 px-4">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="bg-card rounded-lg shadow-lg border border-border p-8 text-center">
             <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-card-foreground mb-2">
               Trip Created Successfully!
             </h1>
-            <p className="text-gray-600 mb-6">{submitResult.message}</p>
+            <p className="text-muted-foreground mb-6">{submitResult.message}</p>
             
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <p className="text-sm text-gray-500 mb-2">Trip ID</p>
-              <div className="flex items-center justify-center space-x-2">
-                <code className="text-lg font-mono bg-white px-3 py-2 rounded border">
-                  {submitResult.tripId}
-                </code>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => copyToClipboard(submitResult.tripId!)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            {submitResult.tallyLink && (
-              <div className="bg-blue-50 rounded-lg p-4 mb-6">
-                <p className="text-sm text-blue-600 mb-2">Tally Form Link</p>
-                <div className="flex items-center justify-center space-x-2 mb-3">
-                  <code className="text-sm bg-white px-3 py-2 rounded border flex-1">
-                    {submitResult.tallyLink}
+            <div className="bg-muted rounded-lg p-4 mb-6">
+              <div className="text-left">
+                <p className="text-sm text-muted-foreground mb-2">
+                  <strong>Trip ID:</strong> {submitResult.tripId}
+                </p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  <strong>Destination:</strong> {submitResult.destination}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <strong>Tally URL:</strong>
+                </p>
+                <div className="flex items-center mt-1 space-x-2">
+                  <code className="text-xs bg-background p-2 rounded flex-1 break-all border border-border">
+                    {submitResult.tallyUrl}
                   </code>
                   <Button
-                    size="sm"
+                    type="button"
                     variant="outline"
-                    onClick={() => copyToClipboard(submitResult.tallyLink!)}
+                    size="sm"
+                    onClick={() => copyToClipboard(submitResult.tallyUrl!)}
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
                 </div>
-                <Button
-                  size="sm"
-                  onClick={() => window.open(submitResult.tallyLink, "_blank")}
-                  className="inline-flex items-center"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Open Form
-                </Button>
               </div>
-            )}
+            </div>
 
             <div className="space-y-3">
               <Button
-                onClick={() => {
-                  setSubmitResult(null)
-                  setValue("tripId", generateTripId())
-                }}
+                onClick={() => router.push("/trips/new")}
                 className="w-full"
               >
                 Create Another Trip
@@ -160,7 +136,6 @@ export default function NewTripPage() {
                 onClick={() => router.push("/dashboard")}
                 className="w-full"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Dashboard
               </Button>
             </div>
@@ -171,7 +146,7 @@ export default function NewTripPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <Button
@@ -182,18 +157,18 @@ export default function NewTripPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-            <MapPin className="h-8 w-8 text-indigo-600 mr-3" />
+          <h1 className="text-3xl font-bold text-foreground flex items-center">
+            <MapPin className="h-8 w-8 text-primary mr-3" />
             Create New Trip
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted-foreground mt-2">
             Fill in the details to create a new trip booking
           </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-card rounded-lg shadow border border-border p-6">
+            <h2 className="text-xl font-semibold text-card-foreground mb-6">
               Basic Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -201,7 +176,7 @@ export default function NewTripPage() {
                 <Label htmlFor="tripId">Trip ID</Label>
                 <Input
                   id="tripId"
-                  className="mt-1 bg-gray-50"
+                  className="mt-1 bg-muted"
                   readOnly
                   {...register("tripId")}
                 />
@@ -268,7 +243,7 @@ export default function NewTripPage() {
                   {...register("budget", { valueAsNumber: true })}
                 />
                 {budgetValue && budgetValue > 0 && !isNaN(budgetValue) && (
-                  <p className="mt-1 text-sm text-gray-600">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {formatCurrency(budgetValue)}
                   </p>
                 )}
@@ -298,8 +273,8 @@ export default function NewTripPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-card rounded-lg shadow border border-border p-6">
+            <h2 className="text-xl font-semibold text-card-foreground mb-6">
               Trip Details
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -487,8 +462,8 @@ export default function NewTripPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-card rounded-lg shadow border border-border p-6">
+            <h2 className="text-xl font-semibold text-card-foreground mb-6">
               Itinerary
             </h2>
             <div>
