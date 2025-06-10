@@ -1,24 +1,38 @@
 @import "tailwindcss";
 
+/* Mobile browser reset for input styling */
+input, textarea, select, button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #09090b;
+  --foreground: #000000;
   --card: #ffffff;
-  --card-foreground: #09090b;
+  --card-foreground: #000000;
   --popover: #ffffff;
-  --popover-foreground: #09090b;
+  --popover-foreground: #000000;
   --primary: #4f46e5;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #0f172a;
   --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted-foreground: #6b7280;
   --accent: #f1f5f9;
   --accent-foreground: #0f172a;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
+  --border: #d1d5db;
+  --input: #d1d5db;
   --ring: #4f46e5;
   --radius: 0.5rem;
 }
@@ -50,24 +64,24 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #09090b;
-    --foreground: #fafafa;
-    --card: #09090b;
-    --card-foreground: #fafafa;
-    --popover: #09090b;
-    --popover-foreground: #fafafa;
+    --background: #000000;
+    --foreground: #ffffff;
+    --card: #111111;
+    --card-foreground: #ffffff;
+    --popover: #111111;
+    --popover-foreground: #ffffff;
     --primary: #6366f1;
     --primary-foreground: #ffffff;
-    --secondary: #27272a;
-    --secondary-foreground: #fafafa;
-    --muted: #27272a;
-    --muted-foreground: #a1a1aa;
-    --accent: #27272a;
-    --accent-foreground: #fafafa;
+    --secondary: #333333;
+    --secondary-foreground: #ffffff;
+    --muted: #333333;
+    --muted-foreground: #999999;
+    --accent: #333333;
+    --accent-foreground: #ffffff;
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
-    --border: #3f3f46;
-    --input: #3f3f46;
+    --border: #555555;
+    --input: #555555;
     --ring: #6366f1;
   }
 }
@@ -88,7 +102,14 @@ body {
   
   /* Ensure all form elements use proper theming */
   input, textarea, select {
-    @apply text-foreground;
+    @apply text-foreground !important;
+    color: var(--foreground) !important;
+  }
+  
+  /* Ensure labels are always visible */
+  label {
+    @apply text-foreground !important;
+    color: var(--foreground) !important;
   }
   
   /* Fix for webkit-based browsers autofill */
@@ -97,5 +118,37 @@ body {
   input:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--foreground) !important;
     -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+  }
+  
+  /* Mobile-specific fixes */
+  @media (max-width: 768px) {
+    input, textarea, select {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--background) !important;
+      color: var(--foreground) !important;
+      border: 1px solid var(--border) !important;
+    }
+    
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--muted-foreground) !important;
+      opacity: 0.7 !important;
+    }
+    
+    /* Force visibility on mobile */
+    .bg-card {
+      background-color: var(--card) !important;
+      color: var(--card-foreground) !important;
+    }
+    
+    .text-card-foreground {
+      color: var(--card-foreground) !important;
+    }
+    
+    .text-muted-foreground {
+      color: var(--muted-foreground) !important;
+    }
   }
 }

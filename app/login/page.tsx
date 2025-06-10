@@ -48,27 +48,28 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
-        <div className="bg-white rounded-lg shadow-xl p-8">
+        <div className="bg-card rounded-lg shadow-xl p-8 border border-border">
           <div className="text-center">
-            <LogIn className="mx-auto h-12 w-12 text-indigo-600" />
-            <h2 className="mt-6 text-3xl font-bold text-gray-900">
+            <LogIn className="mx-auto h-12 w-12 text-primary" />
+            <h2 className="mt-6 text-3xl font-bold text-card-foreground">
               Trip Management
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-muted-foreground">
               Sign in to your admin account
             </p>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username" className="text-card-foreground">Username</Label>
                 <Input
                   id="username"
                   type="text"
                   autoComplete="username"
                   className="mt-1"
+                  placeholder="Enter your username"
                   {...register("username")}
                 />
                 {errors.username && (
@@ -78,12 +79,13 @@ export default function LoginPage() {
                 )}
               </div>
               <div>
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-card-foreground">Password</Label>
                 <Input
                   id="password"
                   type="password"
                   autoComplete="current-password"
                   className="mt-1"
+                  placeholder="Enter your password"
                   {...register("password")}
                 />
                 {errors.password && (
