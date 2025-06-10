@@ -1,17 +1,14 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Mobile browser reset for input styling */
 input, textarea, select, button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
   font-family: inherit;
   font-size: inherit;
-  color: inherit;
 }
 
 :root {
@@ -35,31 +32,6 @@ input, textarea, select, button {
   --input: #d1d5db;
   --ring: #4f46e5;
   --radius: 0.5rem;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --radius: var(--radius);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -89,19 +61,14 @@ input, textarea, select, button {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground font-sans;
-  }
-  
-  /* Ensure all form elements use proper theming */
-  input, textarea, select {
+  /* Ensure proper text colors for form elements */
+  input:not([class*="border"]):not([class*="bg-"]), 
+  textarea:not([class*="border"]):not([class*="bg-"]), 
+  select:not([class*="border"]):not([class*="bg-"]) {
     color: var(--foreground) !important;
   }
   
@@ -116,12 +83,14 @@ body {
   input:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--foreground) !important;
     -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
-    transition: background-color 5000s ease-in-out 0s !important;
   }
   
   /* Mobile-specific fixes */
   @media (max-width: 768px) {
-    input, textarea, select {
+    /* Only apply to inputs without explicit styling */
+    input:not([class*="border"]):not([class*="bg-"]),
+    textarea:not([class*="border"]):not([class*="bg-"]),
+    select:not([class*="border"]):not([class*="bg-"]) {
       -webkit-appearance: none !important;
       appearance: none !important;
       background-color: var(--background) !important;
@@ -149,4 +118,12 @@ body {
       color: var(--muted-foreground) !important;
     }
   }
+}
+
+/* Fix for webkit autofill styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--foreground) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
 }
