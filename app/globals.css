@@ -102,13 +102,11 @@ body {
   
   /* Ensure all form elements use proper theming */
   input, textarea, select {
-    @apply text-foreground !important;
     color: var(--foreground) !important;
   }
   
   /* Ensure labels are always visible */
   label {
-    @apply text-foreground !important;
     color: var(--foreground) !important;
   }
   
