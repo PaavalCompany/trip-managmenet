@@ -22,13 +22,19 @@ export async function POST(request: NextRequest) {
     // Validate the form data
     const validatedData = tripSchema.parse(body)
 
+    // Convert placeType array to comma-separated string for Google Sheets
+    const dataForSheets = {
+      ...validatedData,
+      placeType: validatedData.placeType.join(", ")
+    }
+
     // Submit to Google Sheets
     const sheetsResponse = await fetch(process.env.GOOGLE_SHEETS_WEB_APP_URL!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(validatedData),
+      body: JSON.stringify(dataForSheets),
     })
 
     if (!sheetsResponse.ok) {

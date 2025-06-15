@@ -20,13 +20,19 @@ export const tripSchema = z.object({
     "Ticket Booking"
   ]),
   hotelDetails: z.enum([
-    "1 star",
-    "2 star", 
-    "3 star",
-    "4 star",
-    "5 star"
+    "1 star Budget",
+    "2 star Budget", 
+    "3 star Standard",
+    "3 star Deluxe",
+    "3 star Premium",
+    "4 star Standard",
+    "4 star Deluxe",
+    "4 star Premium",
+    "5 star Standard",
+    "5 star Deluxe",
+    "5 star Premium"
   ]),
-  placeType: z.enum([
+  placeType: z.array(z.enum([
     "Snowy Area",
     "Hill Station",
     "Cultural",
@@ -34,17 +40,20 @@ export const tripSchema = z.object({
     "Beach",
     "Devotional",
     "City"
-  ]),
+  ])).min(1, "Please select at least one place type"),
   transportMode: z.enum([
     "Flight",
-    "Train",
-    "Bus"
+    "Train - AC",
+    "Train - General",
+    "Bus",
+    "Cab"
   ]),
   destinationCategory: z.enum([
     "South India",
     "Central India",
     "North India",
     "North East India",
+    "Kerala",
     "GCC",
     "Asia",
     "Europe"
@@ -54,7 +63,8 @@ export const tripSchema = z.object({
     "Instagram", 
     "Facebook",
     "Referral",
-    "Ads"
+    "Ads",
+    "Google"
   ]),
   itinerary: z.string().min(10, "Please provide a detailed itinerary")
 })

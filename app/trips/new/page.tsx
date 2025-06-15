@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
   SelectContent,
@@ -22,6 +23,9 @@ import { generateTripId, formatCurrency } from "@/lib/utils"
 export default function NewTripPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hotelRating, setHotelRating] = useState<string>("")
+  const [hotelSubCategory, setHotelSubCategory] = useState<string>("")
+  const [selectedPlaceTypes, setSelectedPlaceTypes] = useState<string[]>([])
   const [submitResult, setSubmitResult] = useState<{
     success: boolean
     tripId?: string
@@ -36,14 +40,52 @@ export default function NewTripPage() {
     control,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<TripFormData>({
     resolver: zodResolver(tripSchema),
     defaultValues: {
       tripId: generateTripId(),
+      placeType: [],
     },
   })
 
   const budgetValue = watch("budget")
+
+  // Handle hotel rating change
+  const handleHotelRatingChange = (value: string) => {
+    setHotelRating(value)
+    setHotelSubCategory("")
+    
+    // For 1 and 2 star, automatically append "Budget"
+    if (value === "1 star" || value === "2 star") {
+      const finalValue = `${value} Budget`
+      setValue("hotelDetails", finalValue as any)
+    } else {
+      // For 3, 4, 5 star, wait for sub-category selection
+      setValue("hotelDetails", "" as any)
+    }
+  }
+
+  // Handle hotel sub-category change
+  const handleHotelSubCategoryChange = (subCategory: string) => {
+    setHotelSubCategory(subCategory)
+    if (hotelRating && (hotelRating === "3 star" || hotelRating === "4 star" || hotelRating === "5 star")) {
+      const finalValue = `${hotelRating} ${subCategory}`
+      setValue("hotelDetails", finalValue as any)
+    }
+  }
+
+  // Handle place type selection
+  const handlePlaceTypeChange = (placeType: string, checked: boolean) => {
+    let newSelectedPlaceTypes: string[]
+    if (checked) {
+      newSelectedPlaceTypes = [...selectedPlaceTypes, placeType]
+    } else {
+      newSelectedPlaceTypes = selectedPlaceTypes.filter(type => type !== placeType)
+    }
+    setSelectedPlaceTypes(newSelectedPlaceTypes)
+    setValue("placeType", newSelectedPlaceTypes as any)
+  }
 
   const onSubmit = async (data: TripFormData) => {
     setIsSubmitting(true)
@@ -319,7 +361,7 @@ export default function NewTripPage() {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={handleHotelRatingChange}
                       defaultValue={field.value}
                     >
                       <SelectTrigger className="mt-1">
@@ -341,31 +383,68 @@ export default function NewTripPage() {
                   </p>
                 )}
               </div>
+              
+              {/* Show sub-category dropdown only for 3, 4, 5 star hotels */}
+              {(hotelRating === "3 star" || hotelRating === "4 star" || hotelRating === "5 star") && (
+                <div>
+                  <Label htmlFor="hotelSubCategory">Hotel Category *</Label>
+                  <Select
+                    onValueChange={handleHotelSubCategoryChange}
+                    value={hotelSubCategory}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select hotel category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Standard">Standard</SelectItem>
+                      <SelectItem value="Deluxe">Deluxe</SelectItem>
+                      <SelectItem value="Premium">Premium</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <div>
                 <Label htmlFor="placeType">Place Type *</Label>
-                <Controller
-                  name="placeType"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Select place type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Snowy Area">Snowy Area</SelectItem>
-                        <SelectItem value="Hill Station">Hill Station</SelectItem>
-                        <SelectItem value="Cultural">Cultural</SelectItem>
-                        <SelectItem value="Adventure">Adventure</SelectItem>
-                        <SelectItem value="Beach">Beach</SelectItem>
-                        <SelectItem value="Devotional">Devotional</SelectItem>
-                        <SelectItem value="City">City</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
+                <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 border border-border rounded-lg bg-card">
+                  {[
+                    "Snowy Area",
+                    "Hill Station", 
+                    "Cultural",
+                    "Adventure",
+                    "Beach",
+                    "Devotional",
+                    "City"
+                  ].map((placeType) => (
+                    <div key={placeType} className="flex items-center space-x-3">
+                      <Checkbox
+                        id={`placeType-${placeType}`}
+                        checked={selectedPlaceTypes.includes(placeType)}
+                        onCheckedChange={(checked) => handlePlaceTypeChange(placeType, checked)}
+                      />
+                      <Label 
+                        htmlFor={`placeType-${placeType}`}
+                        className="text-sm font-medium cursor-pointer text-card-foreground"
+                      >
+                        {placeType}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+                {selectedPlaceTypes.length > 0 && (
+                  <div className="mt-2 p-2 bg-muted rounded-md">
+                    <p className="text-xs text-muted-foreground mb-1">Selected place types:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {selectedPlaceTypes.map((type) => (
+                        <span 
+                          key={type}
+                          className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary text-primary-foreground"
+                        >
+                          {type}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {errors.placeType && (
                   <p className="mt-1 text-sm text-red-600">
                     {errors.placeType.message}
@@ -387,8 +466,10 @@ export default function NewTripPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Flight">Flight</SelectItem>
-                        <SelectItem value="Train">Train</SelectItem>
+                        <SelectItem value="Train - AC">Train - AC</SelectItem>
+                        <SelectItem value="Train - General">Train - General</SelectItem>
                         <SelectItem value="Bus">Bus</SelectItem>
+                        <SelectItem value="Cab">Cab</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
@@ -417,6 +498,7 @@ export default function NewTripPage() {
                         <SelectItem value="Central India">Central India</SelectItem>
                         <SelectItem value="North India">North India</SelectItem>
                         <SelectItem value="North East India">North East India</SelectItem>
+                        <SelectItem value="Kerala">Kerala</SelectItem>
                         <SelectItem value="GCC">GCC</SelectItem>
                         <SelectItem value="Asia">Asia</SelectItem>
                         <SelectItem value="Europe">Europe</SelectItem>
@@ -449,6 +531,7 @@ export default function NewTripPage() {
                         <SelectItem value="Facebook">Facebook</SelectItem>
                         <SelectItem value="Referral">Referral</SelectItem>
                         <SelectItem value="Ads">Ads</SelectItem>
+                        <SelectItem value="Google">Google</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
