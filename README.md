@@ -276,4 +276,4 @@ For support and questions:
 
 ---
 
-**Built with ❤️ using Next.js, Tailwind CSS, and Google Sheets**
+**Built with ❤️ using Next.js, Tailwind CSS, and Google Sheets**.
