@@ -58,11 +58,11 @@ export default function NewTripPage() {
     
     // For 1 and 2 star, automatically append "Budget"
     if (value === "1 star" || value === "2 star") {
-      const finalValue = `${value} Budget`
-      setValue("hotelDetails", finalValue as any)
+      const finalValue = `${value} Budget` as TripFormData["hotelDetails"]
+      setValue("hotelDetails", finalValue)
     } else {
       // For 3, 4, 5 star, wait for sub-category selection
-      setValue("hotelDetails", "" as any)
+      // Don't set a value yet, let the form validation handle it
     }
   }
 
@@ -70,21 +70,21 @@ export default function NewTripPage() {
   const handleHotelSubCategoryChange = (subCategory: string) => {
     setHotelSubCategory(subCategory)
     if (hotelRating && (hotelRating === "3 star" || hotelRating === "4 star" || hotelRating === "5 star")) {
-      const finalValue = `${hotelRating} ${subCategory}`
-      setValue("hotelDetails", finalValue as any)
+      const finalValue = `${hotelRating} ${subCategory}` as TripFormData["hotelDetails"]
+      setValue("hotelDetails", finalValue)
     }
   }
 
   // Handle place type selection
   const handlePlaceTypeChange = (placeType: string, checked: boolean) => {
-    let newSelectedPlaceTypes: string[]
+    let newSelectedPlaceTypes: TripFormData["placeType"]
     if (checked) {
-      newSelectedPlaceTypes = [...selectedPlaceTypes, placeType]
+      newSelectedPlaceTypes = [...selectedPlaceTypes, placeType] as TripFormData["placeType"]
     } else {
-      newSelectedPlaceTypes = selectedPlaceTypes.filter(type => type !== placeType)
+      newSelectedPlaceTypes = selectedPlaceTypes.filter(type => type !== placeType) as TripFormData["placeType"]
     }
     setSelectedPlaceTypes(newSelectedPlaceTypes)
-    setValue("placeType", newSelectedPlaceTypes as any)
+    setValue("placeType", newSelectedPlaceTypes)
   }
 
   const onSubmit = async (data: TripFormData) => {
